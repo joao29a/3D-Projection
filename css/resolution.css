@@ -1,0 +1,35 @@
+#draw{
+    width: 600px;
+    height: 500px;
+    border: 1px solid;
+}
+
+.boxSize{
+    width: 50px;
+}
+
+.boxSizeVL{
+    width: 200px;
+}
+
+#inputVertices{
+    width: 200px;
+}
+
+#inputPlane{
+    width: 200px;
+}
+
+#inputData{
+    float: left;
+    width: 350px;
+}
+
+#figures{
+    float: top;
+    position: absolute;
+}
+
+#wrapper{
+    overflow: auto;
+}

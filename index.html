@@ -1,0 +1,74 @@
+<html
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/resolution.css">
+        <title> 3D Projection </title>
+    </head>
+
+    <body>
+
+        <div id="inputData">
+            <form id="formInput" name="form">
+                <b>View Point</b>
+                <br>
+                    X: <input type="number" name="xview" value="0" class="boxSize">
+                    Y: <input type="number" name="yview" value="0" class="boxSize">
+                    Z: <input type="number" name="zview" value="0" class="boxSize">
+                </br>
+                <br>
+                <b>Projection Plane</b>
+                <div id="inputPlane">
+                    P1: <input id="xp1" type="number" name="xplane1" value="0" class="boxSize">
+                        <input id="yp1" type="number" name="yplane1" value="0" class="boxSize">
+                        <input id="zp1" type="number" name="zplane1" value="0" class="boxSize">
+
+                    P2: <input id="xp2" type="number" name="xplane2" value="0" class="boxSize">
+                        <input id="yp2" type="number" name="yplane2" value="0" class="boxSize">
+                        <input id="zp2" type="number" name="zplane2" value="0" class="boxSize">
+
+                    P3: <input id="xp3" type="number" name="xplane3" value="0" class="boxSize">
+                        <input id="yp3" type="number" name="yplane3" value="0" class="boxSize">
+                        <input id="zp3" type="number" name="zplane3" value="0" class="boxSize">
+
+                    <!-- P4: <input id="xp4" type="number" name="xplane4" value="0" class="boxSize">
+                        <input id="yp4" type="number" name="yplane4" value="0" class="boxSize">
+                        <input id="zp4" type="number" name="zplane4" value="0"
+                        class="boxSize"> -->
+                </div>
+                </br>
+                <b>Object</b>
+                <div id="inputNvList">
+                    Number of vertices: <input id="inputNv" type="number" name="nvobject"
+                        value="0" class="boxSize" onkeypress="getEventNV(event,'nv');" min="0"
+                        onclick="getNV()">
+                    <div id="inputVertices"></div>
+                </div>
+                <div id="inputNsList">
+                    <br>
+                    Number of surfaces: <input id="inputNs" type="number" name="nsobject"
+                        value="0" class="boxSize" onkeypress="getEvent(event,'ns');" min="0"
+                        onclick="getNS()">
+                    </br>
+                    <div id="inputSurfaces"></div>
+                </div>
+                <input type="button" name="buttonView" value="PROJECTION"
+                    onclick="getForm(this.form)">
+            </form>
+        </div>
+
+        <div id="wrapper">
+            <canvas id="draw"></canvas>
+            <br>
+            <div id="figures">
+                <b>Objects: </b>
+                    <input type="button" name="buttonCube" value="CUBE"
+                                onclick="genCube()">
+            </div></br>
+        </div>
+
+    </body>
+
+    <script type="text/javascript" src="js/input.js"></script>
+    <script type="text/javascript" src="js/projection.js"></script>
+    <script type="text/javascript" src="js/cube.js"></script>
+
+</html>
