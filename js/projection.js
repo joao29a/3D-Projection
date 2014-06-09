@@ -1,5 +1,5 @@
 function Projection(){
-    this.viewport = {umin: 100, vmin: 50, umax: 300, vmax: 300};
+    this.viewport = {umin: 200, vmin: 150, umax: 400, vmax: 350};
     this.view_point = {x: 0, y: 0, z: 0};
     this.nv = 0;
     this.vertices_coord = [];
@@ -7,6 +7,8 @@ function Projection(){
                   p2: {x: 0, y: 0, z:0},
                   p3: {x: 0, y: 0, z:0},
                   p4: {x: 0, y: 0, z:0}}
+
+    this.type = "per";
 
     this.ns = 0;
     this.surfaces = [];
@@ -32,7 +34,7 @@ function Projection(){
     }
 
     this.initProjection = function(){
-        var r0 = this.plane.p1;
+        var r0 = this.plane.p2;
         var n = this.getNormal();
         var d0 = r0.x * n[0] + r0.y * n[1] + r0.z * n[2];
 
@@ -41,18 +43,34 @@ function Projection(){
         var c = this.view_point.z;
         var d1 = a * n[0] + b * n[1] + c * n[2];
         var d = d0 - d1;
-        var mpp = [[ d + a * n[0],     a * n[1],     a * n[2], -a * d0],
-                   [     b * n[0], d + b * n[1],     b * n[2], -b * d0],
-                   [     c * n[0],     c * n[1], d + c * n[2], -c * d0],
-                   [         n[0],         n[1],         n[2],     -d1]];
+
+        var mpper = [[ d + a * n[0],     a * n[1],     a * n[2], -a * d0],
+                     [     b * n[0], d + b * n[1],     b * n[2], -b * d0],
+                     [     c * n[0],     c * n[1], d + c * n[2], -c * d0],
+                     [         n[0],         n[1],         n[2],     -d1]];
+
+
+        var mppar = [[ d1 - a * n[0],    -a * n[1],     -a * n[2], a * d0],
+                     [     -b * n[0], d - b * n[1],     -b * n[2], b * d0],
+                     [     -c * n[0],    -c * n[1],  d - c * n[2], c * d0],
+                     [             0,            0,             0,     d1]];
 
         var mvt = this.getVerticesMatrix();
-        var new_matrix = this.matrixMultiplication(mpp, mvt);
+        var new_matrix;
+        if (this.type === "per") new_matrix = this.matrixMultiplication(mpper, mvt);
+        else new_matrix = this.matrixMultiplication(mppar, mvt);
         new_matrix = this.convertToCartesian(new_matrix);
+        if (this.type === "per") this.reflection(new_matrix);
         var min = this.getMin(new_matrix);
         var max = this.getMax(new_matrix);
         new_matrix = this.transformToViewPort(new_matrix, max, min);
         this.plotPoints(new_matrix);
+    }
+
+    this.reflection = function(new_matrix){
+        for (var i = 0; i < this.nv; i++){
+            new_matrix[1][i] = -new_matrix[1][i];
+        }
     }
 
     this.getMin = function(matrix){
@@ -150,8 +168,6 @@ function Projection(){
             var x = matrix[0][i] / matrix[3][i];
             var y = matrix[1][i] / matrix[3][i];
             var z = matrix[2][i] / matrix[3][i];
-            x = x / z;
-            y = y / z;
             new_matrix[0].push(x);
             new_matrix[1].push(y);
             new_matrix[2].push(1);

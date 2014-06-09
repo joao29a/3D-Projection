@@ -1,3 +1,7 @@
+function getRadio(value){
+    projection.type = value;
+}
+
 function getEvent(e, type){
     if (e.keyCode == 13){
         if (type == "nv")

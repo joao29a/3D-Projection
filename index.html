@@ -10,9 +10,9 @@
             <form id="formInput" name="form">
                 <b>View Point</b>
                 <br>
-                    X: <input type="number" name="xview" value="0" class="boxSize">
-                    Y: <input type="number" name="yview" value="0" class="boxSize">
-                    Z: <input type="number" name="zview" value="0" class="boxSize">
+                    X: <input id="viewx" type="number" name="xview" value="0" class="boxSize">
+                    Y: <input id="viewy" type="number" name="yview" value="0" class="boxSize">
+                    Z: <input id="viewz" type="number" name="zview" value="0" class="boxSize">
                 </br>
                 <br>
                 <b>Projection Plane</b>
@@ -62,6 +62,11 @@
                 <b>Objects: </b>
                     <input type="button" name="buttonCube" value="CUBE"
                                 onclick="genCube()">
+                <br>
+                    <input type="radio" name="checkProjection"
+                            value="per" onclick="getRadio(this.value)">Perspective</input>
+                    <input type="radio" name="checkProjection"
+                            value="par" onclick="getRadio(this.value)">Parallel</input>
             </div></br>
         </div>
 
