@@ -10,6 +10,8 @@ function Projection(){
 
     this.type = "per";
 
+    this.hide = false;
+
     this.ns = 0;
     this.surfaces = [];
 
@@ -35,7 +37,7 @@ function Projection(){
 
     this.initProjection = function(){
         var r0 = this.plane.p2;
-        var n = this.getNormal();
+        var n = this.getNormal(this.plane.p1, this.plane.p2, this.plane.p3);
         var d0 = r0.x * n[0] + r0.y * n[1] + r0.z * n[2];
 
         var a = this.view_point.x;
@@ -100,19 +102,40 @@ function Projection(){
     this.plotPoints = function(matrix){
         plot.clear();
         for (var i = 0; i < this.ns; i++){
-            for (var j = 0; j < this.surfaces[i].length - 1; j++){
-                var vt1 = parseInt(this.surfaces[i][j].vt);
-                var vt2 = parseInt(this.surfaces[i][j+1].vt);
-                var point1 = {x: matrix[0][vt1-1], y: matrix[1][vt1-1]};
-                var point2 = {x: matrix[0][vt2-1], y: matrix[1][vt2-1]};
-                if (j == 0){
-                    var vt_f = parseInt(this.surfaces[i][this.surfaces[i].length -1].vt);
-                    pointf = {x: matrix[0][vt_f-1], y: matrix[1][vt_f-1]};
-                    plot.draw_line(point1, pointf);
+            var visible = true;
+            if (this.hide == true)
+                visible = this.isVisible(this.surfaces[i]);
+            if (visible)
+                for (var j = 0; j < this.surfaces[i].length - 1; j++){
+                    var vt1 = parseInt(this.surfaces[i][j].vt);
+                    var vt2 = parseInt(this.surfaces[i][j+1].vt);
+                    var point1 = {x: matrix[0][vt1-1], y: matrix[1][vt1-1]};
+                    var point2 = {x: matrix[0][vt2-1], y: matrix[1][vt2-1]};
+                    if (j == 0){
+                        var vt_f = parseInt(this.surfaces[i][this.surfaces[i].length -1].vt);
+                        pointf = {x: matrix[0][vt_f-1], y: matrix[1][vt_f-1]};
+                        plot.draw_line(point1, pointf);
+                    }
+                    plot.draw_line(point1, point2);
                 }
-                plot.draw_line(point1, point2);
-            }
+            
         }
+    }
+
+    this.isVisible = function(surface){
+        var n = this.getNormal(surface[1].vt[1], surface[0].vt[1], surface[2].vt[1]);
+        var vx = this.view_point.x;
+        var vy = this.view_point.y;
+        var vz = this.view_point.z;
+        var point = surface[1].vt[1];
+        var d = [point.x - vx, point.y - vy, point.z - vz];
+        var scalar_nv = n[0]*d[0] + n[1]*d[1] + n[2]*d[2];
+        var mag_n = Math.sqrt(Math.pow(n[0], 2) + Math.pow(n[1], 2) + Math.pow(n[2], 2));
+        var mag_d = Math.sqrt(Math.pow(d[0], 2) + Math.pow(d[1], 2) + Math.pow(d[2], 2));
+        var angle = scalar_nv / (mag_n * mag_d);
+        if ((Math.acos(angle) * (180 / 3.14159)) > 90)
+            return false;
+        return true;
     }
 
     this.matrixMultiplication = function(mpp, mvt){
@@ -143,21 +166,22 @@ function Projection(){
         return matrix_vt;
     }
 
-    this.getNormal = function(){
-        var u = [this.plane.p2.x - this.plane.p1.x,
-                 this.plane.p2.y - this.plane.p1.y,
-                 this.plane.p2.z - this.plane.p1.z];
+    this.getNormal = function(p1, p2, p3){
+        var u = [p2.x - p1.x,
+                 p2.y - p1.y,
+                 p2.z - p1.z];
 
 
-        var v = [this.plane.p3.x - this.plane.p1.x,
-                 this.plane.p3.y - this.plane.p1.y,
-                 this.plane.p3.z - this.plane.p1.z];
+        var v = [p3.x - p1.x,
+                 p3.y - p1.y,
+                 p3.z - p1.z];
 
 
         //u x v
         var s1 = u[1]*v[2] - u[2]*v[1];
         var s2 = u[2]*v[0] - u[0]*v[2];
         var s3 = u[0]*v[1] - u[1]*v[0];
+
 
         return [s1, s2, s3];
     }

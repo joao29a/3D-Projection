@@ -1,3 +1,7 @@
+function hideChecked(){
+    projection.hide = document.getElementById("hideCheck").checked;
+}
+
 function getRadio(value){
     projection.type = value;
 }
@@ -136,6 +140,7 @@ function getFormVertices(form){
 }
 
 function getForm(form){
+    hideChecked();
     getFormView(form);
     getFormProjection(form);
     getFormVertices(form);
