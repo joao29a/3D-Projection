@@ -1,4 +1,5 @@
 function Projection(){
+    this.viewport = {umin: 100, vmin: 50, umax: 300, vmax: 300};
     this.view_point = {x: 0, y: 0, z: 0};
     this.nv = 0;
     this.vertices_coord = [];
@@ -47,20 +48,51 @@ function Projection(){
 
         var mvt = this.getVerticesMatrix();
         var new_matrix = this.matrixMultiplication(mpp, mvt);
-        var points = this.convertToCartesian(new_matrix);
-        this.plotPoints(points);
+        new_matrix = this.convertToCartesian(new_matrix);
+        var min = this.getMin(new_matrix);
+        var max = this.getMax(new_matrix);
+        new_matrix = this.transformToViewPort(new_matrix, max, min);
+        this.plotPoints(new_matrix);
     }
 
-    this.plotPoints = function(points){
+    this.getMin = function(matrix){
+        var min = {x: Number.POSITIVE_INFINITY, y: Number.POSITIVE_INFINITY};
+        for (var i = 0; i < this.nv; i++){
+            var sum = matrix[0][i] + matrix[1][i];
+            if (sum < min.x + min.y){
+                min.x = matrix[0][i];
+                min.y = matrix[1][i];
+            }
+        }
+        return min;
+    }
+
+    this.getMax = function(matrix){
+        var max = {x: Number.NEGATIVE_INFINITY, y: Number.NEGATIVE_INFINITY};
+        for (var i = 0; i < this.nv; i++){
+            var sum = matrix[0][i] + matrix[1][i];
+            if (sum > max.x + max.y){
+                max.x = matrix[0][i];
+                max.y = matrix[1][i];
+            }
+        }
+        return max;
+    }
+
+    this.plotPoints = function(matrix){
+        plot.clear();
         for (var i = 0; i < this.ns; i++){
             for (var j = 0; j < this.surfaces[i].length - 1; j++){
                 var vt1 = parseInt(this.surfaces[i][j].vt);
                 var vt2 = parseInt(this.surfaces[i][j+1].vt);
+                var point1 = {x: matrix[0][vt1-1], y: matrix[1][vt1-1]};
+                var point2 = {x: matrix[0][vt2-1], y: matrix[1][vt2-1]};
                 if (j == 0){
                     var vt_f = parseInt(this.surfaces[i][this.surfaces[i].length -1].vt);
-                    this.draw_line(points[vt1-1], points[vt_f-1]);
+                    pointf = {x: matrix[0][vt_f-1], y: matrix[1][vt_f-1]};
+                    plot.draw_line(point1, pointf);
                 }
-                this.draw_line(points[vt1-1], points[vt2-1]);
+                plot.draw_line(point1, point2);
             }
         }
     }
@@ -113,26 +145,43 @@ function Projection(){
     }
 
     this.convertToCartesian = function(matrix){
-        var points = [];
+        var new_matrix = [[], [], []];
         for (var i = 0; i < this.nv; i++){
             var x = matrix[0][i] / matrix[3][i];
             var y = matrix[1][i] / matrix[3][i];
             var z = matrix[2][i] / matrix[3][i];
-            x = x /// z;
-            y = y /// z;
-            points.push({"x": x, "y": y});
+            x = x / z;
+            y = y / z;
+            new_matrix[0].push(x);
+            new_matrix[1].push(y);
+            new_matrix[2].push(1);
         }
-        return points;
+        return new_matrix;
     }
-    
-    this.draw_line = function(p1, p2){
-        alert("oi");
-        var panel = document.getElementById("draw");
-        var ctx = panel.getContext("2d");
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.stroke();
+
+    this.transformToViewPort = function(matrix, max, min){
+        var umin = this.viewport.umin;
+        var vmin = this.viewport.vmin;
+        var umax = this.viewport.umax;
+        var vmax = this.viewport.vmax;
+        var mvp = [[(umax - umin) / (max.x - min.x), 0, (-min.x * (umax - umin) / (max.x - min.x)) + umin],
+                   [0, (vmax - vmin) / (max.y - min.y), (-min.y * (vmax - vmin) / (max.y - min.y)) + vmin],
+                   [0,  0,  1]];
+        
+        var new_matrix = [[], [], []];
+        for (var i = 0; i < 3; i++){
+            for (var j = 0; j < this.nv; j++){
+                var new_value = 0;
+                for (var k = 0; k < 3; k++){
+                    new_value += mvp[i][k]*matrix[k][j];
+                }
+                new_matrix[i].push(new_value);
+            }
+        }
+        return new_matrix;
     }
+
 }
 
+plot = new Plot();
 projection = new Projection();
