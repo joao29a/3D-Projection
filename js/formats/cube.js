@@ -30,7 +30,7 @@ function setSurfaceVerticesCube(){
     document.getElementById("inputNs0").value = "6-7-8-5";
     document.getElementById("inputNs1").value = "7-2-3-8";
     document.getElementById("inputNs2").value = "2-1-4-3";
-    document.getElementById("inputNs3").value = "6-1-4-5";
+    document.getElementById("inputNs3").value = "6-5-4-1";
     document.getElementById("inputNs4").value = "2-7-6-1";
     document.getElementById("inputNs5").value = "8-3-4-5";
 }
