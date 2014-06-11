@@ -7,6 +7,8 @@ document.onkeydown = function(e){
         projection.view_point.x -= 1;
     else if (e.keyCode == 68)
         projection.view_point.x += 1;
+    document.getElementById("viewx").value = projection.view_point.x;
+    document.getElementById("viewy").value = projection.view_point.y;
     projection.initProjection();
 }
 

@@ -5,8 +5,7 @@ function Projection(){
     this.vertices_coord = [];
     this.plane = {p1: {x: 0, y: 0, z:0},
                   p2: {x: 0, y: 0, z:0},
-                  p3: {x: 0, y: 0, z:0},
-                  p4: {x: 0, y: 0, z:0}}
+                  p3: {x: 0, y: 0, z:0}}
 
     this.type = "per";
 
@@ -134,13 +133,14 @@ function Projection(){
         return true;
     }
 
-    this.matrixMultiplication = function(mpp, mvt){
-        var new_matrix = [[], [], [], []];
-        for (var i = 0; i < 4; i++){
+    this.matrixMultiplication = function(m, mvt){
+        var new_matrix = [];
+        for (var i = 0; i < m.length; i++){
+            new_matrix.push([]);
             for (var j = 0; j < this.nv; j++){
                 var new_value = 0;
-                for (var k = 0; k < 4; k++){
-                    new_value += mpp[i][k]*mvt[k][j];
+                for (var k = 0; k < m.length; k++){
+                    new_value += m[i][k]*mvt[k][j];
                 }
                 new_matrix[i].push(new_value);
             }
@@ -204,17 +204,7 @@ function Projection(){
                    [0, (vmax - vmin) / (max.y - min.y), (-min.y * (vmax - vmin) / (max.y - min.y)) + vmin],
                    [0,  0,  1]];
         
-        var new_matrix = [[], [], []];
-        for (var i = 0; i < 3; i++){
-            for (var j = 0; j < this.nv; j++){
-                var new_value = 0;
-                for (var k = 0; k < 3; k++){
-                    new_value += mvp[i][k]*matrix[k][j];
-                }
-                new_matrix[i].push(new_value);
-            }
-        }
-        return new_matrix;
+        return this.matrixMultiplication(mvp, matrix);
     }
 
 }
