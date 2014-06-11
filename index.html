@@ -7,14 +7,15 @@
     <body>
 
         <div id="inputData">
+            Use the W, A, S, D keys to change the values of view point.
             <form id="formInput" name="form">
-                <b>View Point</b>
+                <br><b>View Point</b>
                 <br>
                     X: <input id="viewx" type="number" name="xview" value="0" class="boxSize">
                     Y: <input id="viewy" type="number" name="yview" value="0" class="boxSize">
                     Z: <input id="viewz" type="number" name="zview" value="0" class="boxSize">
                 </br>
-                <br>
+                </br>
                 <b>Projection Plane</b>
                 <div id="inputPlane">
                     P1: <input id="xp1" type="number" name="xplane1" value="0" class="boxSize">
@@ -29,12 +30,8 @@
                         <input id="yp3" type="number" name="yplane3" value="0" class="boxSize">
                         <input id="zp3" type="number" name="zplane3" value="0" class="boxSize">
 
-                    <!-- P4: <input id="xp4" type="number" name="xplane4" value="0" class="boxSize">
-                        <input id="yp4" type="number" name="yplane4" value="0" class="boxSize">
-                        <input id="zp4" type="number" name="zplane4" value="0"
-                        class="boxSize"> -->
                 </div>
-                </br>
+                <br>
                 <b>Object</b>
                 <div id="inputNvList">
                     Number of vertices: <input id="inputNv" type="number" name="nvobject"
@@ -50,18 +47,23 @@
                     </br>
                     <div id="inputSurfaces"></div>
                 </div>
-                <input type="button" name="buttonView" value="PROJECTION"
-                    onclick="getForm(this.form)">
-            </form>
+                </br>
         </div>
 
         <div id="wrapper">
             <div id="draw"></div>
             <br>
             <div id="figures">
+                <input type="button" name="buttonView" value="PROJECTION"
+                    onclick="getForm(this.form)">
+                </form>
                 <b>Objects: </b>
                     <input type="button" name="buttonCube" value="CUBE"
                                 onclick="genCube()">
+                    <input type="button" name="buttonPrism" value="PRISM"
+                                onclick="genPrism()">
+                    <input type="button" name="buttonPrism" value="HOUSE"
+                                onclick="genHouse()">
                 <br>
                     <input type="radio" name="checkProjection"
                             value="per" onclick="getRadio(this.value)" checked>Perspective</input>
@@ -80,6 +82,8 @@
     <script type="text/javascript" src="js/draw.js"></script>
     <script type="text/javascript" src="js/input.js"></script>
     <script type="text/javascript" src="js/projection.js"></script>
-    <script type="text/javascript" src="js/cube.js"></script>
+    <script type="text/javascript" src="js/formats/cube.js"></script>
+    <script type="text/javascript" src="js/formats/prism.js"></script>
+    <script type="text/javascript" src="js/formats/house.js"></script>
 
 </html>

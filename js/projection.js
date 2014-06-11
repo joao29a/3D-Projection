@@ -39,7 +39,6 @@ function Projection(){
         var r0 = this.plane.p2;
         var n = this.getNormal(this.plane.p1, this.plane.p2, this.plane.p3);
         var d0 = r0.x * n[0] + r0.y * n[1] + r0.z * n[2];
-
         var a = this.view_point.x;
         var b = this.view_point.y;
         var c = this.view_point.z;
@@ -52,7 +51,7 @@ function Projection(){
                      [         n[0],         n[1],         n[2],     -d1]];
 
 
-        var mppar = [[ d1 - a * n[0],    -a * n[1],     -a * n[2], a * d0],
+        var mppar = [[  d - a * n[0],    -a * n[1],     -a * n[2], a * d0],
                      [     -b * n[0], d - b * n[1],     -b * n[2], b * d0],
                      [     -c * n[0],    -c * n[1],  d - c * n[2], c * d0],
                      [             0,            0,             0,     d1]];
@@ -62,7 +61,7 @@ function Projection(){
         if (this.type === "per") new_matrix = this.matrixMultiplication(mpper, mvt);
         else new_matrix = this.matrixMultiplication(mppar, mvt);
         new_matrix = this.convertToCartesian(new_matrix);
-        if (this.type === "per") this.reflection(new_matrix);
+        this.reflection(new_matrix);
         var min = this.getMin(new_matrix);
         var max = this.getMax(new_matrix);
         new_matrix = this.transformToViewPort(new_matrix, max, min);
@@ -78,9 +77,9 @@ function Projection(){
     this.getMin = function(matrix){
         var min = {x: Number.POSITIVE_INFINITY, y: Number.POSITIVE_INFINITY};
         for (var i = 0; i < this.nv; i++){
-            var sum = matrix[0][i] + matrix[1][i];
-            if (sum < min.x + min.y){
+            if (matrix[0][i] < min.x)
                 min.x = matrix[0][i];
+            if (matrix[1][i] < min.y){
                 min.y = matrix[1][i];
             }
         }
@@ -90,9 +89,9 @@ function Projection(){
     this.getMax = function(matrix){
         var max = {x: Number.NEGATIVE_INFINITY, y: Number.NEGATIVE_INFINITY};
         for (var i = 0; i < this.nv; i++){
-            var sum = matrix[0][i] + matrix[1][i];
-            if (sum > max.x + max.y){
+            if (matrix[0][i] > max.x)
                 max.x = matrix[0][i];
+            if (matrix[1][i] > max.y){
                 max.y = matrix[1][i];
             }
         }
@@ -130,10 +129,7 @@ function Projection(){
         var point = surface[1].vt[1];
         var d = [point.x - vx, point.y - vy, point.z - vz];
         var scalar_nv = n[0]*d[0] + n[1]*d[1] + n[2]*d[2];
-        var mag_n = Math.sqrt(Math.pow(n[0], 2) + Math.pow(n[1], 2) + Math.pow(n[2], 2));
-        var mag_d = Math.sqrt(Math.pow(d[0], 2) + Math.pow(d[1], 2) + Math.pow(d[2], 2));
-        var angle = scalar_nv / (mag_n * mag_d);
-        if ((Math.acos(angle) * (180 / 3.14159)) > 90)
+        if (scalar_nv < 0)
             return false;
         return true;
     }

@@ -1,3 +1,15 @@
+document.onkeydown = function(e){
+    if (e.keyCode == 87)
+        projection.view_point.y += 1;
+    else if (e.keyCode == 83)
+        projection.view_point.y -= 1;
+    else if (e.keyCode == 65)
+        projection.view_point.x -= 1;
+    else if (e.keyCode == 68)
+        projection.view_point.x += 1;
+    projection.initProjection();
+}
+
 function hideChecked(){
     projection.hide = document.getElementById("hideCheck").checked;
 }
@@ -84,7 +96,7 @@ function getFormSurfaceVertices(form){
     projection.surfaces = [];
     var n_surfaces = projection.getNs();
     for (var i = 0; i < n_surfaces; i++){
-        var s = form.elements["nsobject" + i].value;
+        var s = form.elements["nsobject" + i].value.split("-");
         var surface = [];
         for (var j = 0; j < s.length; j++){
             var vt = parseInt(s[j]);
@@ -112,10 +124,6 @@ function getFormProjection(form){
     projection.plane.p3.x = parseInt(form.xplane3.value);
     projection.plane.p3.y = parseInt(form.yplane3.value);
     projection.plane.p3.z = parseInt(form.zplane3.value);
-
-    //projection.plane.p4.x = parseInt(form.xplane4.value);
-    //projection.plane.p4.y = parseInt(form.yplane4.value);
-    //projection.plane.p4.z = parseInt(form.zplane4.value);
 }
 
 
