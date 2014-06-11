@@ -1,5 +1,5 @@
 function Projection(){
-    this.viewport = {umin: 200, vmin: 150, umax: 400, vmax: 350};
+    this.viewport = {umin: 50, vmin: 50, umax: 550, vmax: 450};
     this.view_point = {x: 0, y: 0, z: 0};
     this.nv = 0;
     this.vertices_coord = [];
